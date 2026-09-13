@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPA 音標練習</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header>
+      <p class="eyebrow">INTERACTIVE PHONETICS</p>
+      <div class="title-row"><h1>IPA 音標練習</h1><button class="secondary-button" id="settingsButton">高分榜設定</button></div>
+      <p class="intro">3 分鐘限時挑戰。答錯即結束，看看你能連對幾題。</p>
+    </header>
+
+    <section id="startScreen" class="card start-card">
+      <label class="nickname-field" for="nickname">你的暱稱</label>
+      <input class="nickname-input" id="nickname" maxlength="20" placeholder="例如：小明" autocomplete="nickname" style="width:100%; margin:7px 0 24px; padding:12px; border:1px solid #d9e2ec; border-radius:10px; font:inherit;" />
+      <h2>選擇練習模式</h2>
+      <div class="mode-grid" id="modeGrid">
+        <button class="mode-choice active" data-mode="moa"><span>MOA</span><small>發音方法</small></button>
+        <button class="mode-choice" data-mode="poa"><span>POA</span><small>發音部位</small></button>
+        <button class="mode-choice" data-mode="vowel"><span>VOWEL</span><small>元音位置</small></button>
+      </div>
+      <h2>選擇出題方向</h2>
+      <div class="direction-group">
+        <label><input type="radio" name="direction" value="symbolToFeature" checked /> 看音標，選特徵</label>
+        <label><input type="radio" name="direction" value="featureToSymbol" /> 看特徵，選音標</label>
+      </div>
+      <button class="primary-button" id="startButton">開始挑戰</button>
+    </section>
+
+    <section id="quizScreen" class="card quiz-card hidden" aria-live="polite">
+      <div class="status-row"><span id="modeLabel"></span><strong id="timer">3:00</strong><span>正確 <b id="score">0</b> 題</span></div>
+      <div class="progress"><i id="timerBar"></i></div>
+      <p class="question-kicker" id="questionKicker">請選出正確答案</p>
+      <div class="prompt" id="prompt"></div>
+      <div class="answers" id="answers"></div>
+      <p class="hint">答錯會立即結束本局。</p>
+    </section>
+
+    <section id="resultScreen" class="card result-card hidden">
+      <p class="eyebrow">本局結束</p>
+      <h2 id="resultTitle">做得好！</h2>
+      <p class="result-score"><b id="finalScore">0</b><span>題正確</span></p>
+      <p id="resultDetail"></p>
+      <div class="result-actions"><button class="primary-button" id="againButton">再來一局</button><button class="secondary-button" id="homeButton">更換模式</button></div>
+    </section>
+
+    <section class="card leaderboard-card">
+      <div class="section-title"><h2>歷史高分</h2><span id="syncStatus">本機紀錄</span></div>
+      <ol id="leaderboard"></ol>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="settings-form">
+      <div class="dialog-title"><h2>高分榜設定</h2><button class="close-button" value="cancel" aria-label="關閉">×</button></div>
+      <p>預設只儲存在這台裝置。填入 Google Apps Script 網址後，每局成績也會送到你的 Google Sheet。</p>
+      <label for="scriptUrl">Google Apps Script 網頁應用程式網址</label>
+      <input id="scriptUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
+      <div class="dialog-actions"><button class="secondary-button" id="clearUrl" type="button">改回本機紀錄</button><button class="primary-button" id="saveSettings" value="default">儲存設定</button></div>
+    </form>
+  </dialog>
+  <script src="app.js"></script>
+</body>
+</html>

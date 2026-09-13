@@ -21,7 +21,25 @@ $('startButton').onclick=start;$('againButton').onclick=start;$('homeButton').on
 function show(id){['startScreen','quizScreen','resultScreen'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
 function start(){score=0;seconds=180;locked=false;$('score').textContent=0;$('modeLabel').textContent=labels[selectedMode];show('quizScreen');ask();clearInterval(timerId);timerId=setInterval(()=>{seconds--;renderTime();if(seconds<=0)end('時間到！')},1000);renderTime()}
 function renderTime(){const m=Math.floor(seconds/60),s=String(seconds%60).padStart(2,'0');$('timer').textContent=`${m}:${s}`;$('timerBar').style.width=`${seconds/180*100}%`}
-function ask(){locked=false;const bank=banks[selectedMode], direction=getDirection();activeQuestion=bank[Math.floor(Math.random()*bank.length)];const [symbol,feature]=activeQuestion;const options=shuffled([activeQuestion,...shuffled(bank.filter(x=>x[direction==='symbolToFeature'?1:0]!==activeQuestion[direction==='symbolToFeature'?1:0])).slice(0,3)]);$('questionKicker').textContent=direction==='symbolToFeature'?'這個音標的特徵是？':'哪一個音標符合此特徵？';$('prompt').textContent=direction==='symbolToFeature'?`/${symbol}/`:feature;const answers=$('answers');answers.innerHTML='';options.forEach(([s,f])=>{const button=document.createElement('button');button.className='answer';button.textContent=direction==='symbolToFeature'?f:`/${s}/`;button.onclick=()=>answer(button,[s,f]);answers.append(button)})}
+function ask(){
+  locked=false;
+  const bank=banks[selectedMode], direction=getDirection();
+  activeQuestion=bank[Math.floor(Math.random()*bank.length)];
+  const [symbol,feature]=activeQuestion;
+  const answerText=item=>direction==='symbolToFeature'?item[1]:`/${item[0]}/`;
+  const used=new Set([answerText(activeQuestion)]);
+  const distractors=[];
+  for(const item of shuffled(bank)){
+    const text=answerText(item);
+    if(!used.has(text)){distractors.push(item);used.add(text)}
+    if(distractors.length===3)break;
+  }
+  const options=shuffled([activeQuestion,...distractors]);
+  $('questionKicker').textContent=direction==='symbolToFeature'?'這個音標的特徵是？':'哪一個音標符合此特徵？';
+  $('prompt').textContent=direction==='symbolToFeature'?`/${symbol}/`:feature;
+  const answers=$('answers');answers.innerHTML='';
+  options.forEach(([s,f])=>{const button=document.createElement('button');button.className='answer';button.textContent=direction==='symbolToFeature'?f:`/${s}/`;button.onclick=()=>answer(button,[s,f]);answers.append(button)})
+}
 function answer(button,choice){if(locked)return;locked=true;const correct=choice[0]===activeQuestion[0]&&choice[1]===activeQuestion[1];if(correct){button.classList.add('correct');score++;$('score').textContent=score;setTimeout(ask,350)}else{button.classList.add('wrong');[...$('answers').children].find(b=>b.textContent===(getDirection()==='symbolToFeature'?activeQuestion[1]:`/${activeQuestion[0]}/`))?.classList.add('correct');setTimeout(()=>end('答錯了！'),550)}}
 function records(){return JSON.parse(localStorage.getItem('ipaScores')||'[]')}
 function renderBoard(){const list=records().sort((a,b)=>b.score-a.score||b.at-a.at).slice(0,8);$('leaderboard').innerHTML=list.length?list.map(r=>`<li><b>${r.score} 題</b>　${r.name}・${labels[r.mode]}<span class="record-meta">${new Date(r.at).toLocaleDateString('zh-TW')}</span></li>`).join(''):'<li>尚無紀錄，開始你的第一局吧！</li>';const hasUrl=localStorage.getItem('ipaSheetUrl');$('syncStatus').textContent=hasUrl?'已連結 Google Sheet':'本機紀錄'}

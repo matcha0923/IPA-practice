@@ -10,6 +10,7 @@ const banks = {
   ]
 };
 const labels={moa:'混合模式・部位 × 方法',poa:'POA・發音部位',vowel:'Vowel・元音位置'};
+const defaultSheetUrl='https://script.google.com/macros/s/AKfycbw_K7SmSss_7EHvhbajmHFuSfrbpHJVRBVzPy9SPpRdC9FUYZGlTGKweyuOEHO5oVzV/exec';
 let selectedMode='moa', score=0, timerId, seconds=180, activeQuestion, locked=false;
 const $=id=>document.getElementById(id);
 function nickname(){return $('nickname').value.trim()||'匿名練習者'}
@@ -42,7 +43,8 @@ function ask(){
 }
 function answer(button,choice){if(locked)return;locked=true;const correct=choice[0]===activeQuestion[0]&&choice[1]===activeQuestion[1];if(correct){button.classList.add('correct');score++;$('score').textContent=score;setTimeout(ask,350)}else{button.classList.add('wrong');[...$('answers').children].find(b=>b.textContent===(getDirection()==='symbolToFeature'?activeQuestion[1]:`/${activeQuestion[0]}/`))?.classList.add('correct');setTimeout(()=>end('答錯了！'),550)}}
 function records(){return JSON.parse(localStorage.getItem('ipaScores')||'[]')}
-function renderBoard(){const list=records().sort((a,b)=>b.score-a.score||b.at-a.at).slice(0,8);$('leaderboard').innerHTML=list.length?list.map(r=>`<li><b>${r.score} 題</b>　${r.name}・${labels[r.mode]}<span class="record-meta">${new Date(r.at).toLocaleDateString('zh-TW')}</span></li>`).join(''):'<li>尚無紀錄，開始你的第一局吧！</li>';const hasUrl=localStorage.getItem('ipaSheetUrl');$('syncStatus').textContent=hasUrl?'已連結 Google Sheet':'本機紀錄'}
+function sheetUrl(){return localStorage.getItem('ipaSheetUrl')||defaultSheetUrl}
+function renderBoard(){const list=records().sort((a,b)=>b.score-a.score||b.at-a.at).slice(0,8);$('leaderboard').innerHTML=list.length?list.map(r=>`<li><b>${r.score} 題</b>　${r.name}・${labels[r.mode]}<span class="record-meta">${new Date(r.at).toLocaleDateString('zh-TW')}</span></li>`).join(''):'<li>尚無紀錄，開始你的第一局吧！</li>';$('syncStatus').textContent='已連結 Google Sheet'}
 function end(title){clearInterval(timerId);const record={name:nickname(),score,mode:selectedMode,direction:getDirection(),at:Date.now()};const all=records();all.push(record);localStorage.setItem('ipaScores',JSON.stringify(all));sendScore(record);$('resultTitle').textContent=title;$('finalScore').textContent=score;$('resultDetail').textContent=`${record.name}・${labels[selectedMode]}・${getDirection()==='symbolToFeature'?'看音標選特徵':'看特徵選音標'}`;renderBoard();show('resultScreen')}
-function sendScore(record){const url=localStorage.getItem('ipaSheetUrl');if(!url)return;fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...record,modeLabel:labels[record.mode],directionLabel:record.direction==='symbolToFeature'?'看音標選特徵':'看特徵選音標'})}).catch(()=>{})}
+function sendScore(record){fetch(sheetUrl(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...record,modeLabel:labels[record.mode],directionLabel:record.direction==='symbolToFeature'?'看音標選特徵':'看特徵選音標'})}).catch(()=>{})}
 $('settingsButton').onclick=()=>{$('scriptUrl').value=localStorage.getItem('ipaSheetUrl')||'';$('settingsDialog').showModal()};$('saveSettings').onclick=()=>{const url=$('scriptUrl').value.trim();if(url)localStorage.setItem('ipaSheetUrl',url);else localStorage.removeItem('ipaSheetUrl');renderBoard()};$('clearUrl').onclick=()=>{$('scriptUrl').value='';localStorage.removeItem('ipaSheetUrl');renderBoard()};$('nickname').value=localStorage.getItem('ipaNickname')||'';$('nickname').addEventListener('input',()=>localStorage.setItem('ipaNickname',$('nickname').value.trim()));renderBoard();

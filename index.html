@@ -57,10 +57,10 @@
   <dialog id="settingsDialog">
     <form method="dialog" class="settings-form">
       <div class="dialog-title"><h2>高分榜設定</h2><button class="close-button" value="cancel" aria-label="關閉">×</button></div>
-      <p>預設只儲存在這台裝置。填入 Google Apps Script 網址後，每局成績也會送到你的 Google Sheet。</p>
+      <p>網站已預設同步至 Google Sheet。只有在你要更換成績表時，才需要在此貼上新的 Apps Script 網址。</p>
       <label for="scriptUrl">Google Apps Script 網頁應用程式網址</label>
       <input id="scriptUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
-      <div class="dialog-actions"><button class="secondary-button" id="clearUrl" type="button">改回本機紀錄</button><button class="primary-button" id="saveSettings" value="default">儲存設定</button></div>
+      <div class="dialog-actions"><button class="secondary-button" id="clearUrl" type="button">使用網站預設</button><button class="primary-button" id="saveSettings" value="default">儲存設定</button></div>
     </form>
   </dialog>
   <script src="app.js"></script>

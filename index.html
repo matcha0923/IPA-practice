@@ -10,46 +10,46 @@
   <main class="app-shell">
     <header>
       <p class="eyebrow">INTERACTIVE PHONETICS</p>
-      <div class="title-row"><h1>IPA 音標練習</h1><button class="secondary-button" id="settingsButton">高分榜設定</button></div>
-      <p class="intro">3 分鐘限時挑戰。答錯即結束，看看你能連對幾題。</p>
+      <div class="title-row"><h1 id="appTitle">IPA 音標練習</h1><div><button class="secondary-button" id="languageButton">EN</button> <button class="secondary-button" id="settingsButton">高分榜設定</button></div></div>
+      <p class="intro" id="intro">3 分鐘限時挑戰。答錯即結束，看看你能連對幾題。</p>
     </header>
 
     <section id="startScreen" class="card start-card">
-      <label class="nickname-field" for="nickname">你的暱稱</label>
+      <label class="nickname-field" id="nicknameLabel" for="nickname">你的暱稱</label>
       <input class="nickname-input" id="nickname" maxlength="20" placeholder="例如：小明" autocomplete="nickname" style="width:100%; margin:7px 0 24px; padding:12px; border:1px solid #d9e2ec; border-radius:10px; font:inherit;" />
-      <h2>選擇練習模式</h2>
+      <h2 id="modeHeading">選擇練習模式</h2>
       <div class="mode-grid" id="modeGrid">
-        <button class="mode-choice active" data-mode="moa"><span>混合</span><small>部位 × 方法</small></button>
-        <button class="mode-choice" data-mode="poa"><span>POA</span><small>發音部位</small></button>
-        <button class="mode-choice" data-mode="vowel"><span>VOWEL</span><small>元音位置</small></button>
+        <button class="mode-choice active" data-mode="moa"><span id="mixedMode">混合</span><small id="mixedModeSmall">部位 × 方法</small></button>
+        <button class="mode-choice" data-mode="poa"><span>POA</span><small id="poaModeSmall">發音部位</small></button>
+        <button class="mode-choice" data-mode="vowel"><span>VOWEL</span><small id="vowelModeSmall">元音位置</small></button>
       </div>
-      <h2>選擇出題方向</h2>
+      <h2 id="directionHeading">選擇出題方向</h2>
       <div class="direction-group">
-        <label><input type="radio" name="direction" value="symbolToFeature" checked /> 看音標，選特徵</label>
-        <label><input type="radio" name="direction" value="featureToSymbol" /> 看特徵，選音標</label>
+        <label><input type="radio" name="direction" value="symbolToFeature" checked /> <span id="symbolDirection">看音標，選特徵</span></label>
+        <label><input type="radio" name="direction" value="featureToSymbol" /> <span id="featureDirection">看特徵，選音標</span></label>
       </div>
       <button class="primary-button" id="startButton">開始挑戰</button>
     </section>
 
     <section id="quizScreen" class="card quiz-card hidden" aria-live="polite">
-      <div class="status-row"><span id="modeLabel"></span><strong id="timer">3:00</strong><span>正確 <b id="score">0</b> 題</span></div>
+      <div class="status-row"><span id="modeLabel"></span><strong id="timer">3:00</strong><span id="scoreText">正確 <b id="score">0</b> 題</span></div>
       <div class="progress"><i id="timerBar"></i></div>
       <p class="question-kicker" id="questionKicker">請選出正確答案</p>
       <div class="prompt" id="prompt"></div>
       <div class="answers" id="answers"></div>
-      <p class="hint">答錯會立即結束本局。</p>
+      <p class="hint" id="hint">答錯會立即結束本局。</p>
     </section>
 
     <section id="resultScreen" class="card result-card hidden">
-      <p class="eyebrow">本局結束</p>
+      <p class="eyebrow" id="resultKicker">本局結束</p>
       <h2 id="resultTitle">做得好！</h2>
-      <p class="result-score"><b id="finalScore">0</b><span>題正確</span></p>
+      <p class="result-score"><b id="finalScore">0</b><span id="finalScoreLabel">題正確</span></p>
       <p id="resultDetail"></p>
       <div class="result-actions"><button class="primary-button" id="againButton">再來一局</button><button class="secondary-button" id="homeButton">更換模式</button></div>
     </section>
 
     <section class="card leaderboard-card">
-      <div class="section-title"><h2>歷史高分</h2><span id="syncStatus">本機紀錄</span></div>
+      <div class="section-title"><h2 id="leaderboardTitle">歷史高分</h2><span id="syncStatus">本機紀錄</span></div>
       <ol id="leaderboard"></ol>
     </section>
   </main>
